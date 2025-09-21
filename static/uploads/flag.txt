@@ -1,0 +1,2 @@
+Congrats — you found the file upload flag!
+FLAG: THM{file_upload_successful}

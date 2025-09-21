@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Vehicles - DriveNow</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Icon library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo"><i class="fa-solid fa-car-side"></i> DriveNow</div>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('search') }}" class="active">Search</a></li>
+        <li><a href="{{ url_for('booking') }}">Book Now</a></li>
+
+        {% if session.get('user') %}
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% elif session.get('admin') %}
+          <li><a href="{{ url_for('admin') }}">Admin</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Search Section -->
+  <section class="vehicles-section">
+    <h2><i class="fa-solid fa-magnifying-glass"></i> Search Vehicles</h2>
+
+    <!-- Search Form -->
+    <div class="search-container">
+      <form method="GET" action="{{ url_for('search') }}" class="search-form">
+        <input type="text" name="query" placeholder="Enter vehicle name or description..." value="{{ query }}">
+        <button type="submit" class="btn"><i class="fa-solid fa-search"></i> Search</button>
+      </form>
+    </div>
+    <p class="hint"><i class="fa-solid fa-lightbulb"></i> Hint: The page sometimes repeats what you whisper. Angle brackets are a good place to start.</p>
+
+    {% if special_message %}
+    <p class="special-message">{{ special_message }}</p>
+    {% endif %}
+
+    <!-- Search Results -->
+    <div class="vehicles-container">
+      {% if vehicles %}
+        {% for v in vehicles %}
+        <div class="vehicle-card">
+          <div class="vehicle-image">
+            <img src="{{ url_for('static', filename='images/' + v['image']) }}" alt="{{ v['name'] }}">
+          </div>
+          <div class="vehicle-details">
+            <h3>{{ v['name'] }}</h3>
+            <p class="desc">{{ v['description'] }}</p>
+            <div class="vehicle-meta">
+              <span class="price"><i class="fa-solid fa-dollar-sign"></i> {{ v['price_per_day'] }}/day</span>
+            </div>
+            <a href="{{ url_for('booking') }}" class="btn book-btn">
+              <i class="fa-solid fa-calendar-check"></i> Book Now
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="no-results"><i class="fa-solid fa-triangle-exclamation"></i> No vehicles found matching your search.</p>
+      {% endif %}
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 DriveNow Vehicle Renting System | Designed for Cyber Security CTF</p>
+  </footer>
+</body>
+</html>

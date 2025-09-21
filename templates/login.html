@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - DriveNow</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .sqli-flag { background:#fff7e6; border:1px dashed #e0a800; padding:10px; margin-bottom:12px; font-weight:600; }
+    .hint { color:#555; font-size:0.95em; margin-top:12px; background:#f7fbff; padding:8px; border-radius:6px; border:1px solid #e6f0ff; }
+    .error { color: #a94442; margin-bottom:12px; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo"><i class="fa-solid fa-car"></i> DriveNow</div>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('search') }}">Search</a></li>
+        <li><a href="{{ url_for('booking') }}">Book Now</a></li>
+        <li><a href="{{ url_for('login') }}" class="active">Login</a></li>
+        <li><a href="{{ url_for('register') }}">Register</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Login Section -->
+  <section class="form-section">
+    <div class="form-container">
+      <h2><i class="fa-solid fa-right-to-bracket"></i> Login</h2>
+
+      {% if sqli_flag %}
+        <div class="sqli-flag"><i class="fa-solid fa-flag"></i> SQLi detected FLAG: {{ sqli_flag }}</div>
+      {% endif %}
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="error">
+            {% for msg in messages %}
+              <li><i class="fa-solid fa-circle-exclamation"></i> {{ msg }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <form action="{{ url_for('login') }}" method="POST">
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email"
+               placeholder="Email"
+               value="{{ query_value if query_value is defined else '' }}">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+        <button type="submit" class="btn"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+      </form>
+      <p class="form-footer">Don't have an account? <a href="{{ url_for('register') }}"><i class="fa-solid fa-user-plus"></i> Register here</a></p>
+
+      <!-- Your requested hint -->
+      <p class="hint"><i class="fa-solid fa-lightbulb"></i> Hint: Sometimes typing unusual characters in the login fields can reveal secrets...</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 DriveNow Vehicle Renting System | Designed for Cyber Security CTF</p>
+  </footer>
+</body>
+</html>

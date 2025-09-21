@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Profile - DriveNow</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo"><i class="fa-solid fa-car"></i> DriveNow</div>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('search') }}">Search</a></li>
+        <li><a href="{{ url_for('booking') }}">Book Now</a></li>
+        {% if session.get('user') %}
+          <li><a href="{{ url_for('profile') }}" class="active">Profile</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <main class="profile-section">
+    <div class="profile-container">
+      {% if not session.get('user') %}
+        <div class="form-container">
+          <h2><i class="fa-solid fa-triangle-exclamation"></i> Not signed in</h2>
+          <p>Please <a href="{{ url_for('login') }}"><i class="fa-solid fa-right-to-bracket"></i> login</a> to view your profile.</p>
+        </div>
+      {% else %}
+        <!-- Profile Header -->
+        <div class="profile-header">
+          <div class="profile-info">
+            <div class="profile-avatar">
+              <img src="{{ url_for('static', filename='images/avatar.jpg') }}" alt="Profile Picture">
+            </div>
+            <div class="profile-meta">
+              <h2><i class="fa-solid fa-user"></i> Welcome, {{ user['name'] }}</h2>
+              <p><i class="fa-solid fa-envelope"></i> <strong>Email:</strong> {{ user['email'] }}</p>
+              <p><i class="fa-solid fa-phone"></i> <strong>Phone:</strong> {{ user['phone'] }}</p>
+            </div>
+          </div>
+
+          <div class="profile-actions">
+            <a href="{{ url_for('search') }}" class="btn"><i class="fa-solid fa-car"></i> Browse Vehicles</a>
+            <a href="{{ url_for('booking') }}" class="btn"><i class="fa-solid fa-calendar-plus"></i> Make a Booking</a>
+            <a href="{{ url_for('logout') }}" class="btn danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+          </div>
+        </div>
+
+        <hr class="profile-divider">
+
+        <!-- Profile upload (CTF) -->
+        <div class="upload-box">
+          <form action="{{ url_for('upload_profile') }}" method="post" enctype="multipart/form-data">
+            <label for="file">Upload profile picture</label><br>
+            <input type="file" name="file" id="file" required>
+            <button type="submit" class="btn small"><i class="fa-solid fa-file-arrow-up"></i> Upload</button>
+          </form>
+
+          {% if profile_upload_flag %}
+            <div class="flag"><i class="fa-solid fa-flag"></i> Profile upload flag: {{ profile_upload_flag }}</div>
+          {% endif %}
+
+          {% if user.get('last_uploaded') %}
+            <p>Last uploaded: 
+              <a href="{{ url_for('uploaded_file', filename=user['last_uploaded']) }}" target="_blank">
+                {{ user['last_uploaded'] }}
+              </a>
+            </p>
+          {% endif %}
+
+          <p class="hint"><i class="fa-solid fa-lightbulb"></i> Hint: Not every upload is meant to be seen, some are meant to be read..</p>
+        </div>
+
+        <h3>Your Bookings</h3>
+
+        {% if bookings %}
+          <table class="bookings-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Vehicle</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Days</th>
+                <th>Total</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for b in bookings %}
+              <tr class="booking-row">
+                <td>{{ loop.index }}</td>
+                <td>{{ b['vehicle']['name'] }}</td>
+                <td>{{ b['start_date'] or 'N/A' }}</td>
+                <td>{{ b['end_date'] or 'N/A' }}</td>
+                <td>{{ b['days'] }}</td>
+                <td>💲{{ b['total_price'] }}</td>
+                <td>
+                  <a href="{{ url_for('view_booking', booking_id=b['id']) }}" class="btn small"><i class="fa-solid fa-eye"></i> View</a>
+                  <a href="{{ url_for('delete_booking', booking_id=b['id']) }}" class="btn danger small"><i class="fa-solid fa-trash"></i> Cancel</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="no-bookings"><i class="fa-solid fa-circle-info"></i> You have no bookings yet. <a href="{{ url_for('search') }}">Browse vehicles</a> to make a booking.</p>
+        {% endif %}
+        <p class="hint"><i class="fa-solid fa-lightbulb"></i> Hint: Not all bookings are visible in your profile...</p>
+
+      {% endif %}
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-text">© 2025 DriveNow Vehicle Renting System | Designed for Cyber Security CTF</p>
+  </footer>
+</body>
+</html>

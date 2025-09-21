@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - DriveNow</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo"><i class="fa-solid fa-car-burst"></i> DriveNow Admin</div>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('search') }}">Search</a></li>
+        <li><a href="{{ url_for('admin') }}" class="active">Admin</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="admin-section">
+    <div class="admin-container">
+      <h2>Vehicle Management</h2>
+
+      <!-- Add Vehicle Form -->
+      <div class="form-container vehicle-form">
+        <h3><i class="fa-solid fa-plus-circle"></i> Add New Vehicle</h3>
+        <form method="POST" action="{{ url_for('admin') }}" enctype="multipart/form-data">
+          <label for="name">Vehicle Name</label>
+          <input type="text" name="name" placeholder="Enter vehicle name" required>
+
+          <label for="description">Description</label>
+          <textarea name="description" placeholder="Enter vehicle description" required></textarea>
+
+          <label for="price">Price Per Day</label>
+          <input type="number" name="price" placeholder="Enter price per day" required>
+
+          <label for="image">Upload Vehicle Image</label>
+          <input type="file" name="image" accept="image/*,text/plain" required>
+
+          <button type="submit" class="btn primary">Add Vehicle</button>
+
+          {% if upload_flag %}
+            <div class="flag">Admin upload flag: {{ upload_flag }}</div>
+          {% endif %}
+          
+          <p class="hint"><i class="fa-solid fa-lightbulb"></i> Hint: Not every upload is meant to be seen, some are meant to be read..</p>
+        </form>
+      </div>
+
+      <!-- Vehicles Table -->
+      <h3>Existing Vehicles</h3>
+      {% if vehicles %}
+      <div class="table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price/Day</th>
+              <th>Image</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in vehicles %}
+            <tr>
+              <td>{{ v['id'] }}</td>
+              <td>{{ v['name'] }}</td>
+              <td>{{ v['description'] }}</td>
+              <td>💲{{ v['price_per_day'] }}</td>
+              <td>{{ v['image'] }}</td>
+              <td>
+                <a href="{{ url_for('delete_vehicle', vehicle_id=v['id']) }}" class="btn danger small">
+                  Delete
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p><i class="fa-solid fa-circle-exclamation"></i> No vehicles available.</p>
+      {% endif %}
+
+      <!-- Bookings Table -->
+      <h2>User Bookings</h2>
+      {% if bookings %}
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Vehicle</th>
+            <th>Days</th>
+            <th>Total Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bookings %}
+          <tr>
+            <td>{{ b['user']['name'] }}</td>
+            <td>{{ b['vehicle']['name'] }}</td>
+            <td>{{ b['days'] }}</td>
+            <td>💲{{ b['total_price'] }}</td>
+            <td>
+              <a href="{{ url_for('delete_booking', booking_id=b['id']) }}" class="btn danger small">
+                Delete
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p><i class="fa-solid fa-circle-exclamation"></i> No bookings available.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 DriveNow Vehicle Renting System | Designed for Cyber Security CTF</p>
+  </footer>
+</body>
+</html>

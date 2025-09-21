@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DriveNow - Vehicle Renting System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo"><i class="fas fa-car-side"></i> DriveNow</div>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+        <li><a href="{{ url_for('search') }}">Search</a></li>
+        <li><a href="{{ url_for('booking') }}">Book Now</a></li>
+
+        {% if session.get('user') %}
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% elif session.get('admin') %}
+          <li><a href="{{ url_for('admin') }}">Admin</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Drive Your Dream Ride Today</h1>
+      <p>From sedans to SUVs, luxury cars to electrics we have the perfect vehicle for your journey.</p>
+      <a href="{{ url_for('search') }}" class="btn primary-btn">Explore Vehicles</a>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <h2 class="section-title">Why Choose DriveNow?</h2>
+    <div class="feature-container">
+      <div class="feature-card">
+        <div class="icon"><i class="fas fa-car"></i></div>
+        <h3>Wide Selection</h3>
+        <p>Choose from a variety of vehicles to match your lifestyle and needs.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><i class="fas fa-dollar-sign"></i></div>
+        <h3>Affordable Pricing</h3>
+        <p>Enjoy competitive rates with flexible rental plans tailored for you.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><i class="fas fa-bolt"></i></div>
+        <h3>Easy Booking</h3>
+        <p>Book your vehicle instantly with our hassle-free booking system.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><i class="fas fa-headset"></i></div>
+        <h3>24/7 Support</h3>
+        <p>Our friendly support team is here to assist you anytime, anywhere.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about">
+    <h2 class="section-title">About Us</h2>
+    <div class="about-container">
+      <p>
+        At <strong>DriveNow</strong>, we believe that renting a vehicle should be simple, affordable, and stress-free. 
+        Founded in 2025, our mission is to make mobility accessible to everyone by providing a wide range of vehicles 
+        from budget rides to luxury experiences. Whether you're planning a road trip, need a temporary ride, or want 
+        to test drive your dream car, DriveNow is here to get you moving.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact">
+    <h2 class="section-title">Contact Us</h2>
+    <div class="contact-container">
+      <form class="contact-form" action="{{ url_for('contact') }}" method="POST">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required value="{{ request.form.get('name', '') }}">
+
+        <label for="email">Your Email</label>
+        <input type="text" id="email" name="email" placeholder="Enter your email" required value="{{ request.form.get('email', '') }}">
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Write your message..." required>{{ request.form.get('message', '') }}</textarea>
+
+        <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Send Message</button>
+
+        <p class="hint"><i class="fa-solid fa-lightbulb"></i> Hint: Sometimes typing unusual characters in the Message fields can reveal secrets...</p>
+      </form>
+
+      <div class="contact-info">
+        <h3>Get in Touch</h3>
+        <p><i class="fas fa-map-marker-alt"></i> 123 Main Street, Colombo, Sri Lanka</p>
+        <p><i class="fas fa-phone"></i> +94 77 123 4567</p>
+        <p><i class="fas fa-envelope"></i> support@drivenow.com</p>
+      </div>
+    </div>
+  </section>
+
+  {% if contact_flag %}
+  <div id="flag-popup" class="flag-popup">
+    <div class="flag-popup-content">
+      <i class="fa-solid fa-flag"></i>
+      <span class="flag-text">{{ contact_flag }}</span>
+      <button id="close-flag" class="close-btn">&times;</button>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Call-to-Action Section -->
+  <section class="cta">
+    <h2>Ready for Your Next Adventure?</h2>
+    <p>Book your vehicle today and start your journey with DriveNow.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 DriveNow Vehicle Renting System | Designed for Cyber Security CTF</p>
+  </footer>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const popup = document.getElementById("flag-popup");
+    const closeBtn = document.getElementById("close-flag");
+
+    if (popup && closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        popup.style.display = "none";
+      });
+
+      // Close on background click
+      popup.addEventListener("click", (e) => {
+        if (e.target === popup) {
+          popup.style.display = "none";
+        }
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

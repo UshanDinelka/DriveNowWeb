@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Vehicle - DriveNow</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo"><i class="fa-solid fa-car-side"></i> DriveNow</div>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('search') }}">Search</a></li>
+        <li><a href="{{ url_for('booking') }}" class="active">Book Now</a></li>
+
+        {% if session.get('user') %}
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% elif session.get('admin') %}
+          <li><a href="{{ url_for('admin') }}">Admin</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <section class="form-section">
+    <div class="form-container">
+      <h2><i class="fa-solid fa-car"></i> Book a Vehicle</h2>
+      <form method="POST" action="{{ url_for('booking') }}">
+        <label for="vehicle_id">Select Vehicle</label>
+        <select id="vehicle_id" name="vehicle_id" required>
+          {% for v in vehicles %}
+            <option value="{{ v['id'] }}">{{ v['name'] }} - 💲{{ v['price_per_day'] }}/day</option>
+          {% endfor %}
+        </select>
+        
+        <label for="start_date">Start Date</label>
+        <input type="date" id="start_date" name="start_date" required>
+        
+        <label for="end_date">End Date</label>
+        <input type="date" id="end_date" name="end_date" required>
+        
+        <button type="submit" class="btn">Book Now</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 DriveNow Vehicle Renting System | Designed for Cyber Security CTF</p>
+  </footer>
+</body>
+</html>

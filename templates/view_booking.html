@@ -1,0 +1,112 @@
+<!-- templates/view_booking.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Booking Details - DriveNow</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      padding: 24px;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+    .booking-card {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .booking-card img {
+      width: 300px;
+      height: 180px;
+      border-radius: 10px;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .booking-details p { 
+      margin: 8px 0; 
+      color: #333; 
+      font-size: 0.95rem;
+    }
+    .booking-details strong { color: #0d253f; }
+    .btn-back { 
+      display:inline-block; 
+      padding:10px 14px; 
+      background:#0077b6; 
+      color:#fff; 
+      text-decoration:none; 
+      border-radius:8px; 
+    }
+    @keyframes fadeIn {
+      from { opacity:0; transform: translateY(10px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo"><i class="fas fa-car-side"></i> DriveNow</div>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('search') }}">Search</a></li>
+        <li><a href="{{ url_for('booking') }}">Book Now</a></li>
+        {% if session.get('user') %}
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% elif session.get('admin') %}
+          <li><a href="{{ url_for('admin') }}">Admin</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Booking Details -->
+  <main class="container">
+    {% if booking %}
+      <h2> Booking Details — ID: {{ booking['id'] }}</h2>
+      <div class="booking-card">
+        <img src="{{ url_for('static', filename='images/' + booking['vehicle']['image']) }}" alt="{{ booking['vehicle']['name'] }}">
+        <div class="booking-details">
+          <p><strong> Vehicle:</strong> {{ booking['vehicle']['name'] }}</p>
+          <p><strong> Description:</strong> {{ booking['vehicle']['description'] }}</p>
+          <p><strong> Price/Day:</strong> 💲{{ booking['vehicle']['price_per_day'] }}</p>
+          <p><strong> Start Date:</strong> {{ booking['start_date'] or 'N/A' }}</p>
+          <p><strong> End Date:</strong> {{ booking['end_date'] or 'N/A' }}</p>
+          <p><strong> Days:</strong> {{ booking['days'] }}</p>
+          <p><strong> Total Price:</strong> 💲{{ booking['total_price'] }}</p>
+          <p><strong> Booked By:</strong> {{ booking['user']['name'] }} &lt;{{ booking['user']['email'] }}&gt;</p>
+
+          <div style="margin-top:12px;">
+            <a href="{{ url_for('delete_booking', booking_id=booking['id']) }}" class="btn danger">
+              <i class="fa-solid fa-trash"></i> Delete booking
+            </a>
+            <a href="{{ url_for('profile') }}" class="btn" style="margin-left:8px;">
+              <i class="fa-solid fa-arrow-left"></i> Back to Profile
+            </a>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <h2><i class="fa-solid fa-circle-exclamation"></i> Booking not found</h2>
+      <a href="{{ url_for('index') }}" class="btn"><i class="fa-solid fa-house"></i> Back to Home</a>
+    {% endif %}
+  </main>
+
+  <footer>
+    <p>© 2025 DriveNow Vehicle Renting System | Designed for Cyber Security CTF</p>
+  </footer>
+</body>
+</html>
