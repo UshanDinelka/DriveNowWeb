@@ -419,4 +419,4 @@ def contact():
     return render_template('index.html', contact_flag=contact_flag)
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
