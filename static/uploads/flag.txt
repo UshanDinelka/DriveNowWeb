@@ -1,2 +1,2 @@
-Congrats — you found the file upload flag!
-FLAG: THM{file_upload_successful}
+Congrats you accessed the flag.txt
+FLAG: THM{file_access_successful}
