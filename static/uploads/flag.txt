@@ -1,2 +1,1 @@
-Congrats you accessed the flag.txt
-FLAG: THM{file_access_successful}
+THM{path_traversal_flag_example}
